@@ -1,30 +1,10 @@
-import sys
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import pyqtSignal, pyqtSlot
-from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot
+
+from PyQt5 import QtWidgets
 from design1 import Ui_MainWindow
 
-class MyWidget(QObject):
-    newPacketSignal = pyqtSignal()
-    def __init__(self):
-        # Initialize the PunchingBag as a QObject
-        QObject.__init__(self)
-        self._packetsList = []
-
-    def setPacket(self, packet):
-        self._packet = packet
-        # i added the coming two lines to save incoming packets into packetlist
-        self._packetsList.append(self._packet)
-        self.newPacketSignal.emit()
-
-    def getPacket(self):
-        return self._packet
-
-    def getPacketList(self):
-        return self._packetsList
 
 class frontEnd(Ui_MainWindow):
-    def __init__(self, dialog):
+    def __init__(self, dialog,myWidget):
         Ui_MainWindow.__init__(self)
         self.setupUi(dialog)
         self.pushButton_start.clicked.connect(self.Start)
@@ -36,7 +16,7 @@ class frontEnd(Ui_MainWindow):
         # on clicking the row we get the index
         #self.tableWidget.cellClicked.connect(self.whichRow)
         #self.tableWidget.horizontalHeaderItem().setTextAlignment(QtGui.AlignHCenter)
-        self.my_widget = MyWidget()
+        self.my_widget = myWidget
         self.my_widget.newPacketSignal.connect(self.on_packetChanged)
         # This will cause the colorChanged signal to be emitted, calling on_colorChanged
         self.my_widget.setPacket(["a","b","c","d","e","f"])
