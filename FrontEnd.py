@@ -18,6 +18,7 @@ class frontEnd(Ui_MainWindow):
         #self.tableWidget.horizontalHeaderItem().setTextAlignment(QtGui.AlignHCenter)
         #On Clicking filter the filter is applied
         self.pushButton_filter.clicked.connect(self.applyFilter)
+        self.pushButton_filterRemove.clicked.connect(self.removeFilters)
         self.my_widget = myWidget
         self.my_widget.newPacketSignal.connect(self.on_packetChanged)
         self._packetsList = []
@@ -40,8 +41,10 @@ class frontEnd(Ui_MainWindow):
             list = self._packetsList
         else :
             list = self.filteredList
+            self.filteredList = []
 
         #get the new filtered list (better in new thread)
+        #The next throws exception(cause crashe) cuz the list is not populated
         for packet in list:
             for colData in packet:
                 if colData==word:
@@ -53,6 +56,13 @@ class frontEnd(Ui_MainWindow):
         for packet in self.filteredList:
             self.addData(packet)
 
+# Remove Filter not tested
+    def removeFilters(self):
+    #Should remove all filters and go back to initial list
+        self.tableWidget.clearContents()
+    # The next throws exception(cause crashe) cuz the list is not populated
+        for packet in self._packetsList:
+            self.addData(packet)
 
     '''
     def whichRow (self,row):

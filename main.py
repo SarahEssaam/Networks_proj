@@ -17,7 +17,12 @@ class Main(QThread):
 
 if __name__ == '__main__':
 
-    Integration= myWidget()
-    M = Main()
-    M.run(Integration)
-    #Sniffer().run(MyWidget)
+    #Integration= myWidget()
+    #M = Main()
+    #M.run(Integration)
+    # Sniffer().run(MyWidget)
+    app = QtWidgets.QApplication(sys.argv)
+    dialog = QtWidgets.QMainWindow()
+    test_1 = frontEnd(dialog, myWidget())
+    dialog.show()
+    sys.exit(app.exec_())
