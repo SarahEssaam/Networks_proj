@@ -28,7 +28,7 @@ class Ui_MainWindow(object):
         self.pushButton_stop.setObjectName("pushButton_stop")
         self.tableWidget = QtWidgets.QTableWidget(self.centralwidget)
         self.tableWidget.setGeometry(QtCore.QRect(40, 130, 701, 231))
-        self.tableWidget.setColumnCount(7)
+        self.tableWidget.setColumnCount(6)
         self.tableWidget.setObjectName("tableWidget")
         self.tableWidget.setRowCount(0)
         self.textEdit_data = QtWidgets.QTextEdit(self.centralwidget)

@@ -1,7 +1,8 @@
 
 from PyQt5 import QtWidgets
 from design import Ui_MainWindow
-
+import MyWidget
+import time
 
 class frontEnd(Ui_MainWindow):
     def __init__(self, dialog,myWidget):
@@ -19,19 +20,29 @@ class frontEnd(Ui_MainWindow):
         #On Clicking filter the filter is applied
         self.pushButton_filter.clicked.connect(self.applyFilter)
         self.pushButton_filterRemove.clicked.connect(self.removeFilters)
-        self.my_widget = myWidget
-        self.my_widget.newPacketSignal.connect(self.on_packetChanged)
+        #self.my_widget = MyWidget.Integration
+        MyWidget.Integration.newPacketSignal.connect(self.on_packetChanged)
         self._packetsList = []
         self.filteredList = []
-        self.my_widget.setPacket(["a","b","c","d","e","f"])
+        #self.my_widget.setPacket(["a","b","c","d","e","f"])
+        self.sniffing=0
+        MyWidget.start.setPacket(self.sniffing)
+        dialog.show()
 
     def Start(self):
-        flagStart = True
+        self.sniffing=1
+        MyWidget.start.setPacket(self.sniffing)
+        time.sleep(0.1)
     def Stop(self):
-        flagStart = False
+        self.sniffing = 0
+        MyWidget.start.setPacket(self.sniffing)
+        time.sleep(0.1)
 
     def on_packetChanged(self):
-        self.addData(self.my_widget.getPacket())
+        #print(MyWidget.Integration.getPacket())
+        list =MyWidget.Integration.getPacket()
+        self.addData(MyWidget.Integration.getPacket())
+
         self._packetsList.append(list)
 #applyFilter not tested
     def applyFilter(self):
@@ -52,17 +63,31 @@ class frontEnd(Ui_MainWindow):
         #Clear tableWidget entries and edit box
         self.textEdit_filter.clear()
         self.tableWidget.clearContents()
+        self.tableWidget.setRowCount(0);
         #Set new ones
         for packet in self.filteredList:
             self.addData(packet)
 
-# Remove Filter not tested
     def removeFilters(self):
-    #Should remove all filters and go back to initial list
+        # Should remove all filters and go back to initial list
         self.tableWidget.clearContents()
-    # The next throws exception(cause crashe) cuz the list is not populated
+        self.tableWidget.setRowCount(0);
+        # The next throws exception(cause crashe) cuz the list is not populated
         for packet in self._packetsList:
             self.addData(packet)
+
+# Remove Filter not tested
+    '''def removeFilters(self):
+    #Should remove all filters and go back to initial list
+        self.tableWidget.clearContents()
+
+        self.filteredList = []
+    # The next throws exception(cause crashe) cuz the list is not populated
+        for packet in self._packetsList:
+            self.addData(packet)'''
+
+
+
 
     '''
     def whichRow (self,row):
@@ -71,13 +96,16 @@ class frontEnd(Ui_MainWindow):
     '''
     def showPacketDetails(self):
         # we can change this 5 later to the index that will hold the packet data taken from the backend
-        #self.textEdit_data.setText(str(self.my_widget.getPacket()[self.tableWidget.currentRow()][6]))
-        self.textEdit_data.setText(str(self.my_widget.getPacket()[5]))
+
+        self.textEdit_data.setText(str(self._packetsList[self.tableWidget.currentRow()][6]))
+        #print(str(self._packetsList[0]))
+        #self.textEdit_data.setText(str(MyWidget.Integration.getPacket()[5]))
 
     def showHexPacketDetails(self):
         # we can change this 5 later to the index that will hold the packet hex data taken from the backend
-        #self.textEdit_hex.setText(str(self.my_widget.getPacket()[self.tableWidget.currentRow()][7]))
-        self.textEdit_hex.setText(str(self.my_widget.getPacket()[5]))
+        self.textEdit_hex.setText(str(self._packetsList[self.tableWidget.currentRow()][7]))
+        #self.textEdit_hex.setText(str(MyWidget.Integration.getPacket()[5]))
+        #print(str(self._packetsList[self.tableWidget.currentRow()][6]))
 
     def addData(self,list):
         #Create a empty row at bottom of table
@@ -85,6 +113,6 @@ class frontEnd(Ui_MainWindow):
         self.tableWidget.insertRow(numRows)
         #Add text to the row
         for i in range(6):
-            self.tableWidget.setItem(numRows, i, QtWidgets.QTableWidgetItem(list[i]))
+            self.tableWidget.setItem(numRows, i, QtWidgets.QTableWidgetItem(str(list[i])))
 
 
